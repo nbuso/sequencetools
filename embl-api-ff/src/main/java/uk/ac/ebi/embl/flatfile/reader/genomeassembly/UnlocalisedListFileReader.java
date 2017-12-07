@@ -24,6 +24,7 @@ public class UnlocalisedListFileReader extends GCSEntryReader
 	
 	public UnlocalisedListFileReader(File file)
 	{
+		super();
 		this.file=file;
 	}
 

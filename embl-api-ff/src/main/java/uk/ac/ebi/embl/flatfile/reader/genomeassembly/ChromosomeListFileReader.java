@@ -33,6 +33,7 @@ public class ChromosomeListFileReader extends GCSEntryReader
 	
     public ChromosomeListFileReader(File file)
     {
+    	super();
     	this.file=file;
     }
 	@Override

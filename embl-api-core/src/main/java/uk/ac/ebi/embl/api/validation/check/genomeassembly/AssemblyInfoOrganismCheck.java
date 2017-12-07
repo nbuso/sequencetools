@@ -19,42 +19,33 @@ import uk.ac.ebi.embl.api.entry.genomeassembly.AssemblyInfoEntry;
 import uk.ac.ebi.embl.api.validation.ValidationEngineException;
 import uk.ac.ebi.embl.api.validation.ValidationResult;
 import uk.ac.ebi.embl.api.validation.annotation.Description;
-import uk.ac.ebi.embl.api.validation.annotation.RemoteExclude;
+import uk.ac.ebi.embl.api.validation.helper.taxon.TaxonHelper;
 
 @Description("")
-@RemoteExclude
-public class AssemblyInfoSubmissionIdCheck extends GenomeAssemblyValidationCheck<AssemblyInfoEntry>
+public class AssemblyInfoOrganismCheck extends GenomeAssemblyValidationCheck<AssemblyInfoEntry>
 {
    
-	private final String MESSAGE_KEY_MISSING_SUBMISSION_ID_ERROR = "AssemblyInfoMissingSubmissionIDCheck";
-	private final String MESSAGE_KEY_INVALID_SUBMISSION_ID_ERROR = "AssemblyInfoInvalidSubmissionIDCheck";		
+	private final String MESSAGE_KEY_INVALID_ORGANISM_ERROR = "AssemblyInfoInvalidOrganismCheck";
+	private final String MESSAGE_KEY_ORGANISM_MISSING_ERROR = "AssemblyInfoOrganismMissingCheck";
 	
-	
-    public AssemblyInfoSubmissionIdCheck()
-	{
-
-	}
-   
-    @Override
+	@Override
 	public ValidationResult check(AssemblyInfoEntry entry) throws ValidationEngineException
 	{
 		if(entry==null)
 			return result;
-
-		if (entry.getSubmissionId() == null || entry.getSubmissionId().isEmpty())
-		{	
-			reportError(entry.getOrigin(), MESSAGE_KEY_MISSING_SUBMISSION_ID_ERROR);
+		
+		if(entry.getOrganism()==null)
+		{
+			reportError(entry.getOrigin(),MESSAGE_KEY_ORGANISM_MISSING_ERROR);
 			return result;
 		}
 		
-		if (!entry.getSubmissionId().matches("^ERA.*"))
+		TaxonHelper taxonHelper=getEmblEntryValidationPlanProperty().taxonHelper.get();
+		if(!taxonHelper.isOrganismValid(entry.getOrganism()))
 		{
-			reportError(entry.getOrigin(), MESSAGE_KEY_INVALID_SUBMISSION_ID_ERROR, entry.getSubmissionId());			
+			reportError(entry.getOrigin(),MESSAGE_KEY_INVALID_ORGANISM_ERROR);
 		}
-		
 		return result;
-	}	
-
-	
+	}
 	
 }

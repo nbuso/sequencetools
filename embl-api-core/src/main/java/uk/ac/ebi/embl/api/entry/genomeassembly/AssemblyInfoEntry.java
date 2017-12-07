@@ -43,6 +43,7 @@ public class AssemblyInfoEntry extends GCSEntry
 	private String sequencingTechnology;
 	private String program;
 	private String platform;
+	private String moleculeType;
 	
 	public String getAssemblyMethod()
 	{
@@ -285,5 +286,13 @@ public class AssemblyInfoEntry extends GCSEntry
 
 	public void setBiosampleId(String biosampleId) {
 		this.biosampleId = biosampleId;
+	}
+	
+	public void setMoleculeType(String moleculeType){
+		this.moleculeType=moleculeType;
+	}
+	
+	public String getMoleculeType() {
+		return moleculeType;
 	}
 }
