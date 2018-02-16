@@ -18,6 +18,7 @@ package uk.ac.ebi.embl.flatfile.reader;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.RandomAccessFile;
+import java.nio.Charset;
 import java.util.regex.Pattern;
 
 import uk.ac.ebi.embl.flatfile.EmblTag;
@@ -40,6 +41,9 @@ public abstract class LineReader {
 	private int currentLineNumber = 0;
 
 	private int nextLineNumber = 0;
+	
+	// TODO take into consideration the Charset
+	private long bytesOffset = 0;
 
 	private String activeTag;
 	
@@ -51,6 +55,11 @@ public abstract class LineReader {
 	{
 		return ignoreParseError;
 	}
+	
+	/**
+	 * Charset encoding used by the underling stream
+	 */
+	private Charset charset;
 
 	public LineReader setIgnoreParseError(boolean ignoreParseError)
 	{
@@ -72,7 +81,12 @@ public abstract class LineReader {
 	}
 
 	public LineReader(BufferedReader reader) {
+	   this(reader, null);
+	}
+	
+	public LineReader(BufferedReader reader, Charset charset) {
 		this.reader = new LineReaderWrapper(reader);
+		this.charset = charset;
 	}
 
 	public LineReader(BufferedReader reader, String fileId) {
@@ -359,6 +373,9 @@ public abstract class LineReader {
 		}
 		if (currentLine == null) {
 			return false;
+		} else {
+		   // count line terminator
+		   bytesOffset += currentLine.getBytes().length + 1;
 		}
 
 		while (true) {
@@ -367,8 +384,10 @@ public abstract class LineReader {
 			if (nextLine != null) {
 				if (nextLine.length() == 0)
 					continue;
-				if (isSkipLine(nextLine))
-					continue;
+				if (isSkipLine(nextLine)) {
+				   bytesOffset += nextLine.getBytes().length + 1;
+				   continue;
+				}
 
 				nextLine = replaceWithSpace( nextLine );
 			}
@@ -401,6 +420,7 @@ public abstract class LineReader {
 	            case '\n':
 	            case '\r':
 	                result.setCharAt( index, ' ' );
+	                bytesOffset++;
 	            
 	        }
 	    return result.toString();
@@ -431,8 +451,16 @@ public abstract class LineReader {
 			}
 		}
 
-
 	public LineReaderCache getCache() {
 		return cache;
+	}
+	
+	/**
+	 * Return read bytes offset from the beginning of the stream
+	 * 
+	 * @return
+	 */
+	public long getOffset() {
+	   return bytesOffset;
 	}
 }
