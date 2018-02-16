@@ -17,6 +17,7 @@ package uk.ac.ebi.embl.flatfile.reader.embl;
 
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.nio.charset.Charset;
 import java.util.Arrays;
 import java.util.List;
 
@@ -29,6 +30,10 @@ import uk.ac.ebi.embl.flatfile.reader.LineReader;
 import uk.ac.ebi.embl.flatfile.reader.SequenceReader;
 import uk.ac.ebi.embl.flatfile.validation.FlatFileValidations;
 
+/**
+ * Extension of {@link EmblEntryReader} that relax the validation checks to permit keeping most of the data also with validation error.
+ * 
+ */
 public class EBISearchEmblEntryReader extends EmblEntryReader {
 
    private List<String> EXACTLY_ONCE_BLOCKS      = Arrays.asList(EmblTag.ID_TAG, EmblTag.AC_TAG, EmblTag.DE_TAG);
@@ -48,10 +53,10 @@ public class EBISearchEmblEntryReader extends EmblEntryReader {
    private boolean      htmlEntValidationEnabled = true;
    private boolean      conSeqDatacheckEnabled   = true;
 
-   public EBISearchEmblEntryReader(BufferedReader reader, EmblEntryReader.Format format, String fileId,
+   public EBISearchEmblEntryReader(BufferedReader reader, Charset charset, EmblEntryReader.Format format, String fileId,
                     boolean ignoreParseError, boolean htmlEntityValidationEnabled) {
 
-      super(reader, format, fileId);
+      super(reader, charset, format, fileId);
 
       this.htmlEntValidationEnabled = htmlEntityValidationEnabled;
       initializeBlockReaders(format);
