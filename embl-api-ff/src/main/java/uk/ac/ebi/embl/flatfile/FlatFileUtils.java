@@ -22,6 +22,8 @@ import java.util.Vector;
 import java.util.regex.Pattern;
 
 public abstract class FlatFileUtils {
+   private static final SimpleDateFormat yyyySdf = new SimpleDateFormat("yyyy"); 
+   private static final SimpleDateFormat ddMMMyyyySdf = new SimpleDateFormat("dd-MMM-yyyy");
 
     /** Removes all whitespace characters from the beginning and
      * end of the string starting from the given position. 
@@ -232,7 +234,7 @@ public abstract class FlatFileUtils {
 		}
 		Date date = null;
 		try {
-			date = (new SimpleDateFormat("dd-MMM-yyyy").parse(string));
+			date = (ddMMMyyyySdf.parse(string));
 		}
 		catch (ParseException ex) {
 			return null;
@@ -248,7 +250,7 @@ public abstract class FlatFileUtils {
 		}
 		Date date = null;
 		try {
-			date = (new SimpleDateFormat("yyyy").parse(string));
+			date = (yyyySdf.parse(string));
 		}
 		catch (ParseException ex) {
 			return null;
