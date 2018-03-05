@@ -66,6 +66,8 @@ public abstract class LineReader {
 	private Charset charset;
 
 	private CharsetEncoder ce;
+	
+	private int newLineLength;
 
 	public LineReader setIgnoreParseError(boolean ignoreParseError)
 	{
@@ -134,6 +136,11 @@ public abstract class LineReader {
 			ce = charset.newEncoder();
 			ce.onMalformedInput(CodingErrorAction.REPLACE);
 			ce.onUnmappableCharacter(CodingErrorAction.REPLACE);
+		   try {
+            newLineLength = ce.encode(CharBuffer.wrap("\n")).array().length;
+         } catch (CharacterCodingException e) {
+            throw new IllegalStateException(String.format("Error current CharsetEncoder [%s] can't encode a newline", ce.charset().toString()));
+         }
 		}
 	}
 
@@ -387,7 +394,7 @@ public abstract class LineReader {
 				if( currentLine != null ) 
 				{
 					if (currentLine.length() == 0 ) {
-						countStringBytes("\n");
+						countNewlineBytes();
 						continue;
 					}
 					if (isSkipLine(currentLine)) {
@@ -415,7 +422,7 @@ public abstract class LineReader {
 			++nextLineNumber;
 			if (nextLine != null) {
 				if (nextLine.length() == 0) {
-					countStringBytes("\n");
+					countNewlineBytes();
 					continue;
 				}
 				if (isSkipLine(nextLine)) {
@@ -440,14 +447,14 @@ public abstract class LineReader {
 		return true;
 	}
 
-	private void countLineBytes(String line) {
-		// count line terminator
-		countStringBytes(line + "\n");
+	private void countNewlineBytes() {
+	   bytesOffset += newLineLength;
 	}
-
-	private void countStringBytes(String line) {
+	
+	private void countLineBytes(String line) {
 		try {
 			bytesOffset += ce.encode(CharBuffer.wrap(line)).array().length;
+		   bytesOffset += newLineLength;
 		} catch (CharacterCodingException e) {
 			// should not happen, we asked to replace chars in these situations
 			e.printStackTrace();

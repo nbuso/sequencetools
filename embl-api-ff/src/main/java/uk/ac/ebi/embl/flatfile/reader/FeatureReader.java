@@ -240,7 +240,7 @@ public class FeatureReader extends FlatFileLineReader {
 		}
 		String nextLine = lineReader.getNextMaskedLine();
 		
-		nextLine=StringEscapeUtils.unescapeHtml4(nextLine);
+		//nextLine=StringEscapeUtils.unescapeHtml4(nextLine);
 		
 		if (!isQualifier(nextLine)) {
 			return null;
