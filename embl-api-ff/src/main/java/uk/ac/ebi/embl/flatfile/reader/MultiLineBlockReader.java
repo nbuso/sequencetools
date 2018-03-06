@@ -110,7 +110,7 @@ public abstract class MultiLineBlockReader extends BlockReader {
 		String blockString = block.toString();
 		//blockString=EntryUtils.convertNonAsciiStringtoAsciiString(blockString);
 		
-		blockString=StringEscapeUtils.unescapeHtml4(blockString);
+		//blockString=StringEscapeUtils.unescapeHtml4(blockString);
 		
 		if (htmlEntityValidationEnabled) {
 		   Matcher m = htmlEntityRegexPattern.matcher(blockString);
