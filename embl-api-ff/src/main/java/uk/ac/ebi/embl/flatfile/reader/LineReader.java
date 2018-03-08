@@ -46,7 +46,6 @@ public abstract class LineReader {
 
 	private int nextLineNumber = 0;
 	
-	// TODO take into consideration the Charset
 	private long bytesOffset = 0;
 
 	private String activeTag;
@@ -60,14 +59,17 @@ public abstract class LineReader {
 		return ignoreParseError;
 	}
 	
-	/**
-	 * Charset encoding used by the underlying BufferedReader
-	 */
-	private Charset charset;
+   /**
+    * Charset encoding used by the underlying BufferedReader
+    */
+   private Charset charset;
 
-	private CharsetEncoder ce;
-	
-	private int newLineLength;
+   private CharsetEncoder ce;
+
+   /**
+    * Hold the length of a newline in the specified charset 
+    */
+   private int newLineLength;
 
 	public LineReader setIgnoreParseError(boolean ignoreParseError)
 	{
@@ -131,18 +133,18 @@ public abstract class LineReader {
 		initCharsetEncoder();
 	}
 	
-	private void initCharsetEncoder() {
-		if (charset != null) {
-			ce = charset.newEncoder();
-			ce.onMalformedInput(CodingErrorAction.REPLACE);
-			ce.onUnmappableCharacter(CodingErrorAction.REPLACE);
-		   try {
+   private void initCharsetEncoder() {
+      if (charset != null) {
+         ce = charset.newEncoder();
+         ce.onMalformedInput(CodingErrorAction.REPLACE);
+         ce.onUnmappableCharacter(CodingErrorAction.REPLACE);
+         try {
             newLineLength = ce.encode(CharBuffer.wrap("\n")).array().length;
          } catch (CharacterCodingException e) {
             throw new IllegalStateException(String.format("Error current CharsetEncoder [%s] can't encode a newline", ce.charset().toString()));
          }
-		}
-	}
+      }
+   }
 
 	/**
 	 * Returns true if there is an active tag.
@@ -447,20 +449,25 @@ public abstract class LineReader {
 		return true;
 	}
 
-	private void countNewlineBytes() {
-	   bytesOffset += newLineLength;
-	}
+   private void countNewlineBytes() {
+      bytesOffset += newLineLength;
+   }
 	
-	private void countLineBytes(String line) {
-		try {
-			bytesOffset += ce.encode(CharBuffer.wrap(line)).array().length;
-		   bytesOffset += newLineLength;
-		} catch (CharacterCodingException e) {
-			// should not happen, we asked to replace chars in these situations
-			e.printStackTrace();
-		}
-	}
-	
+   /**
+    * Calculate the length of a string line in the specified charset
+    * 
+    * @param line
+    */
+   private void countLineBytes(String line) {
+      try {
+         bytesOffset += ce.encode(CharBuffer.wrap(line)).array().length;
+         bytesOffset += newLineLength;
+      } catch (CharacterCodingException e) {
+         // should not happen, we asked to replace chars in these situations
+         e.printStackTrace();
+      }
+   }
+
 	String
 	replaceWithSpace( CharSequence line )
 	{

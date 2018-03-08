@@ -1,3 +1,7 @@
+# Notes
+This is a fork of [ENA EMBL Parser](https://github.com/enasequence/sequencetools/] with some modifications needed for EBI Search indexing.
+These modifications may be merged later in original repository.
+
 # Sequencetools
 
 SequenceTools is a set of Java tools and APIs for working with sequence data including EMBL-Bank and NCBI flat file parsers and writers and validation and fixing functionality. 
