@@ -234,7 +234,7 @@ public abstract class FlatFileUtils {
 		}
 		Date date = null;
 		try {
-			date = (ddMMMyyyySdf.parse(string));
+			date = ((SimpleDateFormat)ddMMMyyyySdf.clone()).parse(string);
 		}
 		catch (ParseException ex) {
 			return null;
@@ -250,7 +250,7 @@ public abstract class FlatFileUtils {
 		}
 		Date date = null;
 		try {
-			date = (yyyySdf.parse(string));
+			date = ((SimpleDateFormat)yyyySdf.clone()).parse(string);
 		}
 		catch (ParseException ex) {
 			return null;

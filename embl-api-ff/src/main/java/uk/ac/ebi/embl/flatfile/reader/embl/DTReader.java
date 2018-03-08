@@ -61,10 +61,15 @@ public class DTReader extends MultiLineBlockReader {
 			error("FF.1", getTag());
 			return;
 		}
-		entry.setFirstPublic(matcher.getDay(GROUP_FIRST_PUBLIC_DATE));
-		entry.setFirstPublicRelease(matcher.getInteger(GROUP_FIRST_PUBLIC_RELEASE));
-		entry.setLastUpdated(matcher.getDay(GROUP_LAST_UPDATED_DATE));
-		entry.setLastUpdatedRelease(matcher.getInteger(GROUP_LAST_UPDATED_RELEASE));
-		entry.setVersion(matcher.getInteger(GROUP_ENTRY_VERSION));
-	}	
+		try {
+			entry.setFirstPublic(matcher.getDay(GROUP_FIRST_PUBLIC_DATE));
+			entry.setFirstPublicRelease(matcher.getInteger(GROUP_FIRST_PUBLIC_RELEASE));
+			entry.setLastUpdated(matcher.getDay(GROUP_LAST_UPDATED_DATE));
+			entry.setLastUpdatedRelease(matcher.getInteger(GROUP_LAST_UPDATED_RELEASE));
+			entry.setVersion(matcher.getInteger(GROUP_ENTRY_VERSION));
+		} catch (NumberFormatException nfe) {
+		   nfe.printStackTrace();
+			throw new NumberFormatException("Error parsing date on block: "+block+" <"+nfe.getMessage()+"> ");
+		}
+	}
 }
