@@ -1,5 +1,5 @@
 # Notes
-This is a fork of [ENA EMBL Parser](https://github.com/enasequence/sequencetools/] with some modifications needed for EBI Search indexing.
+This is a fork of [ENA EMBL Parser](https://github.com/enasequence/sequencetools/) with some modifications needed for EBI Search indexing.
 These modifications may be merged later in original repository.
 
 # Sequencetools
